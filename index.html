@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SampLD</title>
+    <title>Sampling Very Large Knowledge Bases Using Network Properties</title>
 
     <!-- Bootstrap -->
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -16,12 +16,108 @@
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body>
-    <h1>Hello, world!</h1>
+  <body role="document" style="" cz-shortcut-listen="true">
+	
+    <div class="container" role="main">
+
+      <!-- Main jumbotron for a primary marketing message or call to action -->
+      <div class="jumbotron">
+        <h1>SampLD</h1>
+        <p>Here, we present results related to the AAAI 2014 submission "Sampling Very Large Knowledge Bases Using Network Properties"</p>
+        <p><a href="https://github.com/aaai2014sampld/SampLD" class="btn btn-primary btn-lg" role="button" target="_blank">How to run SampLD »</a></p>
+      </div>
+	<div class="row">
+		<div class="col-md-4">
+	<h2>Paper Abstract</h2>
+	<div class="well">
+        <p> 
+        The Linked Data cloud has grown to become the largest
+knowledge base every constructed. Its size is now turn-
+ing into a major bottleneck in many applications. In or-
+der to facilitate access to this enormous amount of struc-
+tured information, this paper proposes an automatic
+sampling method targeted at maximizing answer cov-
+erage in applications using SPARQL querying. We em-
+pirically show that the relevance of triples for sampling
+(a semantic notion) is influenced by the topology of the
+graph (purely structural), and can be determined with-
+out prior knowledge of the queries. Usage of state-of-
+the-art high-performance methods allowed this analysis
+to be performed on a previously unprecedented scale.
+Experiments show a significantly higher recall of topol-
+ogy based sampling methods over random and naive
+baseline approaches</p></div>
+</div>
+<div class="col-md-4">
+	<h2>Plots</h2>
+	We present several plots in pdf format, for the following six datasets: <a href="http://dbpedia.org" target="_blank">DBpedia</a>, <a href="http://linkedgeodata.org/" target="_blank">Linked Geo Data</a>, <a href="http://metalex.eu/" target="_blank">MetaLex</a>, <a href="http://www.open-biomed.org.uk/" target="_blank">Open-BioMed</a>, <a href="http://bio2rdf.org/" target="_blank">Bio2RDF</a> <small>(more specifically, the <a href="http://download.bio2rdf.org/current/kegg/kegg.html" target="_blank">KEGG</a> dataset)</small>, and <a href="http://data.semanticweb.org/" target="_blank">Semantic Web Dog Food</a>.
+	<h4>Dataset Degree Distribution</h4>
+	<select>
+  <option value="dbpedia">DBpedia</option>
+  <option value="lgd">Linked Geo Data</option>
+  <option value="metalex">MetaLex</option>
+  <option value="obm">Open-BioMed</option>
+  <option value="obm">Bio2RDF</option>
+  <option value="obm">Semantic Web Dog Food</option>
+</select><button onclick="downloadDist(this);"class="btn btn-primary btn-xs">download</button></li>
+<h4>SampLD performance</h4>
+We measure the quality of a sample by calculating recall for a given set of queries, and averaging these recall values.
+Find the sample qualities for all the samples we created for each dataset <a href="results/pdfs/all_avg_recall.pdf" target="_blank">here</a>. 
+As the recall for these queries may deviate, we provide <a href="results/pdfs/all_std_recall.pdf" target="_blank">standard deviation plots</a> per sample as well.
+Finally, we provide plots where we take the <a href="results/pdfs/all_median_recall.pdf" target="_blank">median recall value</a> of these queries instead of the average.
+</div>
+<div class="col-md-4">
+	
+<h2>Interactive results</h2>
+Next to the aggregated sample results (<i>i.e.</i> the pdf plots), we provide more detailed data as well in the form of interactive html tables.
+We provide an html table per dataset and sample size, where each tables shows the recall of each query on all the created samples.
+<br>
+Select dataset: <select id="interactiveDatasetSelect">
+  <option value="dbpedia">DBpedia</option>
+  <option value="lgd">Linked Geo Data</option>
+  <option value="metalex">MetaLex</option>
+  <option value="obm">Open-BioMed</option>
+  <option value="obm">Bio2RDF</option>
+  <option value="obm">Semantic Web Dog Food</option>
+</select><br>
+Select sample size: <select id="interactiveSampleSizeSelect"></select><br>
+<button onclick="showHtmlTable();" class="btn btn-primary">show</button>
+
+</div>
+   
+<div class="row">
+<div class="col-md-12">
+<iframe id="tableIframe" style="height:10px; width: 100%;" frameBorder=0></iframe>
+
+</div>
+
+</div>
+    </div> <!-- /container -->
+
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+    
+    var select = $("#interactiveSampleSizeSelect");
+    for (i=0;i<=100;i++){
+		var stringVal = "0." + (i < 10? "0": "") + i;
+		if (i == 100) stringVal = "1.00";
+        select.append($('<option></option>').val(stringVal).html(i + "%"));
+    }
+
+    function downloadDist(buttonEl) {
+		window.open("results/pdfs/degree_distribution_" + $(buttonEl).prev().val() + ".pdf");
+		//console.log($(buttonEl).prev().val());
+	}
+    function showHtmlTable() {
+		var dataset = $("#interactiveDatasetSelect").val();
+		var sampleSize = $("#interactiveSampleSizeSelect").val();
+		$("#tableIframe").attr("src", "results/evaluation/" + dataset + "/" + sampleSize + "/results.html").height(700);
+		//console.log(dataset, sampleSize);
+	}
+    </script>
   </body>
 </html>
